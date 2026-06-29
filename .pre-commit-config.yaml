@@ -1,0 +1,102 @@
+# Pre-Commit Hook Configuration
+# Prevents accidental commits of secrets before they reach GitHub
+# Install with: pre-commit install
+# Uninstall with: pre-commit uninstall
+
+repos:
+  # ─────────────────────────────────────────────────────────────────────────
+  # Secret Detection
+  # ─────────────────────────────────────────────────────────────────────────
+  
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        name: Detect secrets
+        entry: detect-secrets scan
+        language: python
+        types: [python]
+        args: [--baseline, .secrets.baseline]
+        exclude: ^(?:tests/|\.pre-commit-config\.yaml)$
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.0
+    hooks:
+      - id: gitleaks
+        name: Detect secrets with gitleaks
+        entry: gitleaks protect --verbose --redact
+        language: golang
+        stages: [commit]
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # File Format & Encoding
+  # ─────────────────────────────────────────────────────────────────────────
+  
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      # Prevent .env files
+      - id: check-added-large-files
+        name: Check for large files
+        args: [--maxkb=1000]
+        
+      # Prevent private keys
+      - id: detect-private-key
+        name: Detect private keys
+        
+      # Fix line endings (CRLF → LF)
+      - id: end-of-file-fixer
+        name: Fix end of file
+        
+      # Trim trailing whitespace
+      - id: trailing-whitespace
+        name: Trim trailing whitespace
+        
+      # Validate YAML/JSON
+      - id: check-yaml
+        name: Check YAML syntax
+        args: [--unsafe]
+        
+      - id: check-json
+        name: Check JSON syntax
+        
+      # Prevent commit of .env files
+      - id: check-case-conflict
+        name: Check for case conflicts
+        
+      - id: check-merge-conflict
+        name: Check for merge conflicts
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # PowerShell Security
+  # ─────────────────────────────────────────────────────────────────────────
+  
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.33.0
+    hooks:
+      - id: yamllint
+        name: Lint YAML
+        types: [yaml]
+
+# ─────────────────────────────────────────────────────────────────────────
+# Configuration
+# ─────────────────────────────────────────────────────────────────────────
+
+# Don't run pre-commit on these files/folders
+exclude: |
+  (?x)^(
+    \.git/|
+    \.venv/|
+    venv/|
+    node_modules/|
+    \.vscode/|
+    IR_Evidence_.*|
+    \.secrets\.baseline
+  )$
+
+# Files to always check even if not staged
+# Useful for catching secrets accidentally left in repo
+fail_fast: false
+
+# Verbose output
+verbose: true
