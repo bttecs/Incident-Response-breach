@@ -1,0 +1,66 @@
+# .gitignore
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+~$*
+
+# Evidence & Sensitive Data
+IR_Evidence_*/
+IR_Analysis_*/
+Exfil_Analysis_*/
+*.evtx
+*.dmp
+*.hive
+*.crd
+*.vault
+*.credential
+*_credentials.txt
+*_passwords.txt
+
+# Forensic artifacts (for privacy)
+*.lnk
+*.pf
+NTUSER.DAT
+SAM
+SECURITY
+SOFTWARE
+
+# Log files
+*.log
+pfirewall.log
+*.txt~
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.tar.gz
+*.zip
+
+# Temporary files
+Temp/
+tmp/
+*.tmp
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Node modules (if using any web tools)
+node_modules/
+
+# Environment
+.env
+.env.local
+config.local.yml
+
+# Scripts output (keep in repo for reference only)
+# But don't track specific case evidence:
+!SCRIPTS/
+!TEMPLATES/
+!REFERENCE/
